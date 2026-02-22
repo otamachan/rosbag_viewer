@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.select {
+  font-size: 11px;
+  padding: 2px 4px;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #555555;
+  cursor: pointer;
+}
+
+.btn {
+  padding: 2px 6px;
+  font-size: 11px;
+  background: #ffffff;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #555555;
+  font-weight: 400;
+  line-height: 1;
+}

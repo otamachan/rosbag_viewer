@@ -1,0 +1,21 @@
+import { OccupancyGridDisplay } from "../../three/OccupancyGridDisplay.ts";
+import type { DisplayPlugin } from "../DisplayPlugin.ts";
+
+export const OccupancyGridPlugin: DisplayPlugin = {
+  id: "occupancygrid",
+  canHandle: (type) => type === "nav_msgs/OccupancyGrid",
+  createDisplay: (settings) => {
+    const d = new OccupancyGridDisplay();
+    d.setOpacity((settings.opacity as number) ?? 1.0);
+    return {
+      object: d.object,
+      update: (msg) => d.updateOccupancyGrid(msg),
+      applySettings: (s) => {
+        if (s.opacity != null) d.setOpacity(s.opacity as number);
+      },
+      setResolution: () => {},
+      dispose: () => d.dispose(),
+    };
+  },
+  properties: [{ key: "opacity", label: "Alpha", type: "number", min: 0, max: 1, step: 0.1, defaultValue: 0.7 }],
+};

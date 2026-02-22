@@ -1,0 +1,34 @@
+.key {
+  color: #2878c5;
+}
+
+.string {
+  color: #5cb85c;
+}
+
+.number {
+  color: #d9a44e;
+}
+
+.bool {
+  color: #9b79b9;
+}
+
+.nullValue {
+  color: #666666;
+}
+
+.bracket {
+  color: #999999;
+}
+
+.toggle {
+  cursor: pointer;
+  user-select: none;
+  color: #999999;
+  margin-right: 4px;
+}
+
+.row {
+  padding-left: 16px;
+}

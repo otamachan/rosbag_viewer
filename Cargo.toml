@@ -1,0 +1,6 @@
+[workspace]
+members = ["lib/server", "app/server"]
+resolver = "2"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }

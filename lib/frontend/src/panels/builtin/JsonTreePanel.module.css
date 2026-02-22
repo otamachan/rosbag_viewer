@@ -1,0 +1,13 @@
+.root {
+  padding: 12px;
+  overflow: auto;
+  height: 100%;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.empty {
+  color: #666666;
+  font-style: italic;
+}

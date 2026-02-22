@@ -1,0 +1,29 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 120, 197, 0.06);
+}
+
+.inner {
+  border: 3px dashed #2878c5;
+  border-radius: 12px;
+  padding: 48px 64px;
+  background: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2878c5;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666666;
+}

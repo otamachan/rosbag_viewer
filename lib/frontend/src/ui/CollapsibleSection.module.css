@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #e0e0e0;
+  border-bottom: 1px solid #c0c0c0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555555;
+}
+
+.arrow {
+  font-size: 8px;
+  width: 10px;
+  text-align: center;
+  color: #888888;
+}
+
+.count {
+  margin-left: auto;
+  font-size: 10px;
+  color: #888888;
+  font-weight: 400;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bodyFill {
+  flex: 1;
+}

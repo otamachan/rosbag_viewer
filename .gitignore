@@ -1,0 +1,18 @@
+# Rust
+**/target/
+
+# ROS bag files
+*.bag
+
+# Node
+node_modules/
+dist/
+
+# External repos
+rviz/
+
+# Editor
+.vscode/
+.idea/
+*.sw?
+.DS_Store

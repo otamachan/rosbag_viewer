@@ -1,0 +1,105 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #666666;
+  border-bottom: 1px solid #c0c0c0;
+  min-height: 28px;
+}
+
+.crumbSegment {
+  cursor: pointer;
+  color: #2878c5;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+.crumbSep {
+  color: #999999;
+  margin: 0 1px;
+}
+
+.crumbGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dirIcon {
+  color: #d9a44e;
+  font-size: 12px;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.fileIcon {
+  color: #888888;
+  font-size: 12px;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  display: inline-block;
+  background: #c8c8c8;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+  color: #666666;
+  flex-shrink: 0;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  accent-color: #2878c5;
+}
+
+.selected {
+  background: #2878c520;
+}
+
+.loading {
+  color: #2878c5;
+  margin-left: auto;
+}
+
+.emptyMsg {
+  padding: 8px 12px;
+  color: #999999;
+  font-size: 12px;
+}

@@ -1,0 +1,160 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  padding: 6px 16px;
+  background: #e0e0e0;
+  border-bottom: 1px solid #c0c0c0;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.headerTitle {
+  color: #303030;
+}
+
+.headerInfo {
+  font-size: 11px;
+  color: #666666;
+  font-weight: 400;
+}
+
+.headerBtn {
+  padding: 2px 8px;
+  font-size: 11px;
+  background: #ffffff;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #555555;
+  font-weight: 400;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.resizeHandle {
+  width: 4px;
+  cursor: col-resize;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #efefef;
+}
+
+.panelHeader {
+  padding: 0 12px;
+  background: #e0e0e0;
+  border-bottom: 1px solid #c0c0c0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+.tabBar {
+  display: flex;
+  gap: 0px;
+  flex: 1;
+}
+
+.tab {
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: #666666;
+}
+
+.tabActive {
+  border-bottom: 2px solid #2878c5;
+  color: #303030;
+}
+
+.panelInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-block;
+  background: #c8c8c8;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+  color: #555555;
+}
+
+.panelBody {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fixedFrameBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: #3a3a3c;
+  border-bottom: 1px solid #2a2a2c;
+  flex-shrink: 0;
+}
+
+.fixedFrameLabel {
+  color: #666;
+  font-size: 11px;
+}
+
+.fixedFrameSelect {
+  font-size: 11px;
+  padding: 1px 4px;
+  background: #2a2a2c;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 3px;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888888;
+  font-size: 14px;
+}
+
+.status {
+  padding: 3px 16px;
+  background: #e0e0e0;
+  border-top: 1px solid #c0c0c0;
+  font-size: 11px;
+  color: #666666;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.errorText {
+  color: #d9534f;
+}
