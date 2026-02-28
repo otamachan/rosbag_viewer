@@ -41,7 +41,7 @@ import styles from "./App.module.css";
 
 const TF_TYPES = new Set(["tf2_msgs/TFMessage", "tf/tfMessage"]);
 
-const TOPIC_COLORS = ["#f44336", "#2196f3", "#4caf50", "#ff9800", "#9c27b0", "#00bcd4", "#e91e63", "#795548"];
+const TOPIC_COLORS = ["#f44336", "#2196f3", "#4caf50", "#ff9800", "#ce93d8", "#00bcd4", "#e91e63", "#ffb74d"];
 
 function usePlayback(duration: number, loopRange: [number, number] | null) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -174,12 +174,12 @@ export function App() {
     return new Map();
   });
 
-  // TF fixed frame state (persisted to localStorage)
+  // TF fixed frame state (persisted to localStorage, default to "map")
   const [fixedFrame, setFixedFrame] = useState(() => {
     try {
-      return localStorage.getItem("rosbag-viewer:fixedFrame") ?? "";
+      return localStorage.getItem("rosbag-viewer:fixedFrame") ?? "map";
     } catch {
-      return "";
+      return "map";
     }
   });
   const [availableFrames, setAvailableFrames] = useState<string[]>([]);
