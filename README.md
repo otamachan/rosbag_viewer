@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev)
 [![CI](https://github.com/otamachan/rosbag_viewer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/otamachan/rosbag_viewer/actions/workflows/ci.yml?query=branch%3Amain)
 
-A web-based ROS1 bag file viewer built with Rust and React. Browse, visualize, and play back `.bag` files entirely in the browser.
+Yet another standalone ROS1 bag file viewer built with Rust and React. Just run the binary — it launches a local server and opens the viewer in your browser. Works on Linux, macOS, and Windows.
 
 <!-- TODO: demo video / screenshot -->
 
