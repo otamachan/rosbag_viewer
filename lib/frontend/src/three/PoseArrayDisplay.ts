@@ -81,6 +81,7 @@ export class PoseArrayDisplay {
       this.mesh.dispose();
     }
     this.mesh = new THREE.InstancedMesh(this.arrowGeom, this.material, newCap);
+    this.mesh.frustumCulled = false;
     this.mesh.count = 0;
     this.object.add(this.mesh);
     this.capacity = newCap;

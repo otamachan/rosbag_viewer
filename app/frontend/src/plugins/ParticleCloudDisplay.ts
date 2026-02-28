@@ -76,6 +76,7 @@ export class ParticleCloudDisplay {
       this.mesh.dispose();
     }
     this.mesh = new THREE.InstancedMesh(this.arrowGeom, this.material, newCap);
+    this.mesh.frustumCulled = false;
     this.mesh.count = 0;
     this.mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(newCap * 3), 3);
     this.object.add(this.mesh);

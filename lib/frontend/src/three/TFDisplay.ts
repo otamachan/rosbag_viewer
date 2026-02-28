@@ -96,6 +96,10 @@ export class TFDisplay {
     this.xMesh = new THREE.InstancedMesh(this.axGeom, this.xMat, newCap);
     this.yMesh = new THREE.InstancedMesh(this.axGeom, this.yMat, newCap);
     this.zMesh = new THREE.InstancedMesh(this.axGeom, this.zMat, newCap);
+    // Disable frustum culling — instances span the entire scene
+    this.xMesh.frustumCulled = false;
+    this.yMesh.frustumCulled = false;
+    this.zMesh.frustumCulled = false;
     this.xMesh.count = 0;
     this.yMesh.count = 0;
     this.zMesh.count = 0;

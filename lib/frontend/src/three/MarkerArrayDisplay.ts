@@ -554,6 +554,7 @@ export class MarkerArrayDisplay {
     });
 
     const mesh = new THREE.InstancedMesh(geom, mat, count);
+    mesh.frustumCulled = false;
     const dummy = this._dummy;
 
     const sx = scale?.x ?? 1;
