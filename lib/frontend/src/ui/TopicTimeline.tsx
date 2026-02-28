@@ -91,8 +91,8 @@ export function TopicTimeline({
 
   const totalContentH = RULER_H + topics.length * ROW_H;
 
-  // Cached container width — updated by ResizeObserver, avoids getBoundingClientRect per frame
-  const containerWidthRef = useRef(0);
+  // Container width — updated by ResizeObserver, triggers canvas redraw on resize
+  const [containerWidth, setContainerWidth] = useState(0);
 
   // Visible time window (with overscroll padding so the cursor can reach edges)
   const visibleDuration = duration / zoom;
@@ -272,18 +272,18 @@ export function TopicTimeline({
     return () => el.removeEventListener("wheel", handler);
   }, []);
 
-  // Cache container width via ResizeObserver (avoids getBoundingClientRect per frame)
+  // Track container width via ResizeObserver — triggers canvas redraw on resize
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        containerWidthRef.current = entry.contentRect.width;
+        setContainerWidth(entry.contentRect.width);
       }
     });
     ro.observe(el);
     // Initialize
-    containerWidthRef.current = el.getBoundingClientRect().width;
+    setContainerWidth(el.getBoundingClientRect().width);
     return () => ro.disconnect();
   }, []);
 
@@ -310,12 +310,10 @@ export function TopicTimeline({
   // ---- Draw static layer (everything except playhead) ----
   useEffect(() => {
     const canvas = staticCanvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!canvas || containerWidth <= 0) return;
 
-    const rect = container.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    const w = rect.width;
+    const w = containerWidth;
     const h = totalContentH;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
@@ -489,6 +487,7 @@ export function TopicTimeline({
     visibleDuration,
     densityCache,
     allVisible,
+    containerWidth,
   ]);
 
   // ---- Draw dynamic layer (loop range overlay + playhead) ----
@@ -497,9 +496,8 @@ export function TopicTimeline({
     const canvas = dynamicCanvasRef.current;
     if (!canvas) return;
 
-    // Use cached width from ResizeObserver (no forced reflow)
     const dpr = window.devicePixelRatio || 1;
-    const w = containerWidthRef.current;
+    const w = containerWidth;
     if (w <= 0) return;
     const h = totalContentH;
 
@@ -564,7 +562,7 @@ export function TopicTimeline({
       ctx.lineTo(cx2, h);
       ctx.stroke();
     }
-  }, [currentTime, totalContentH, visibleDuration, viewStart, viewEnd, loopRange, dragRedraw]);
+  }, [currentTime, totalContentH, visibleDuration, viewStart, viewEnd, loopRange, dragRedraw, containerWidth]);
 
   // Height resize
   const handleResizeStart = useCallback(
