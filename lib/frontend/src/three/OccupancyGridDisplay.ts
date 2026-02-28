@@ -1,14 +1,52 @@
 /**
  * Renders a nav_msgs/OccupancyGrid as a textured plane in 3D space.
  *
- * rviz2-style color scheme (map display):
+ * Default rviz2-style color scheme (map display):
  *   -1 (unknown) → #CDCDCD (medium gray)
  *    0 (free)    → #FFFFFF (white)
  *  100 (occupied) → #000000 (black)
  *  in-between    → linear interpolation
+ *
+ * A custom 256×4 RGBA color table can be injected via the constructor
+ * so that the same display class works for distance maps, cost maps, etc.
  */
 
 import * as THREE from "three";
+
+/**
+ * Build the default rviz2-style OccupancyGrid color table (256 entries × RGBA).
+ *
+ * Index mapping (data arrives as int8, reinterpreted as uint8):
+ *  - 0xFF (= -1 signed) → (205, 205, 205, 255) unknown
+ *  - 0..100             → white→black linear interpolation
+ *  - 101..254           → black
+ */
+export function buildOccupancyColorTable(): Uint8Array {
+  const table = new Uint8Array(256 * 4);
+  for (let i = 0; i < 256; i++) {
+    const off = i * 4;
+    if (i === 0xff) {
+      // -1 signed → unknown
+      table[off] = 205;
+      table[off + 1] = 205;
+      table[off + 2] = 205;
+      table[off + 3] = 255;
+    } else if (i <= 100) {
+      const c = 255 - (((i * 255 + 50) / 100) | 0);
+      table[off] = c;
+      table[off + 1] = c;
+      table[off + 2] = c;
+      table[off + 3] = 255;
+    } else {
+      // 101..254 → black
+      table[off] = 0;
+      table[off + 1] = 0;
+      table[off + 2] = 0;
+      table[off + 3] = 255;
+    }
+  }
+  return table;
+}
 
 export class OccupancyGridDisplay {
   readonly object: THREE.Group;
@@ -20,8 +58,10 @@ export class OccupancyGridDisplay {
   private lastHeight = 0;
   /** Reusable RGBA buffer — only reallocated when grid size changes. */
   private rgbaBuf: Uint8Array | null = null;
+  private readonly colorTable: Uint8Array;
 
-  constructor() {
+  constructor(colorTable?: Uint8Array) {
+    this.colorTable = colorTable ?? buildOccupancyColorTable();
     this.object = new THREE.Group();
     this.material = new THREE.MeshBasicMaterial({
       transparent: true,
@@ -79,22 +119,15 @@ export class OccupancyGridDisplay {
     }
     const rgba = this.rgbaBuf;
 
-    // Build RGBA texture data (rviz2 "map" color scheme)
+    // Build RGBA texture data via color table lookup
+    const ct = this.colorTable;
     for (let i = 0; i < expectedLen; i++) {
-      const v = cells[i] as number;
-      const idx = i * 4;
-      if (v < 0) {
-        rgba[idx] = 205;
-        rgba[idx + 1] = 205;
-        rgba[idx + 2] = 205;
-        rgba[idx + 3] = 255;
-      } else {
-        const c = 255 - (((Math.min(v, 100) * 255 + 50) / 100) | 0);
-        rgba[idx] = c;
-        rgba[idx + 1] = c;
-        rgba[idx + 2] = c;
-        rgba[idx + 3] = 255;
-      }
+      const src = ((cells[i] as number) & 0xff) * 4;
+      const dst = i * 4;
+      rgba[dst] = ct[src] as number;
+      rgba[dst + 1] = ct[src + 1] as number;
+      rgba[dst + 2] = ct[src + 2] as number;
+      rgba[dst + 3] = ct[src + 3] as number;
     }
 
     if (width !== this.lastWidth || height !== this.lastHeight) {
