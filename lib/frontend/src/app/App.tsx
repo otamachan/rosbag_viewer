@@ -503,8 +503,8 @@ export function App() {
             message = cached.bag.decoder.decode(topic.type, payload);
             cache.set(topic.name, { payload, msg: message });
             anyChanged = true;
-          } catch {
-            /* skip */
+          } catch (e) {
+            console.warn(`[decode] Failed to decode ${topic.type} on ${topic.name}:`, e);
           }
         }
       } else {

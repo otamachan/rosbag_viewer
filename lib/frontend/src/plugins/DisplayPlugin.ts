@@ -4,6 +4,8 @@ import type * as THREE from "three";
 /** 3D display object interface */
 export interface ThreeDisplay {
   readonly object: THREE.Object3D;
+  /** Override the frame_id extracted from message header */
+  frameId?: string;
   update(msg: Record<string, unknown>): void;
   /** Called when settings change (color/size/opacity etc — all managed by plugin) */
   applySettings(settings: Record<string, unknown>): void;
