@@ -88,6 +88,10 @@ export class OccupancyGridDisplay {
     this.material.needsUpdate = true;
   }
 
+  setZOffset(z: number): void {
+    this.object.position.z = z;
+  }
+
   /** Update from a decoded nav_msgs/OccupancyGrid message. */
   updateOccupancyGrid(msg: Record<string, unknown>): void {
     const info = msg.info as Record<string, unknown> | undefined;

@@ -43,6 +43,10 @@ export class PathDisplay {
     this.mat.transparent = opacity < 1;
   }
 
+  setZOffset(z: number): void {
+    this.object.position.z = z;
+  }
+
   /** Update from a decoded nav_msgs/Path message. */
   updatePath(msg: Record<string, unknown>): void {
     const poses = msg.poses as Record<string, unknown>[] | undefined;
