@@ -1,6 +1,7 @@
 import { registerPlugins } from "../PluginRegistry.ts";
 import { ImagePlugin } from "./ImagePlugin.tsx";
 import { LaserScanPlugin } from "./LaserScanPlugin.ts";
+import { MarkerArrayPlugin } from "./MarkerArrayPlugin.ts";
 import { OccupancyGridPlugin } from "./OccupancyGridPlugin.ts";
 import { OdometryPlugin } from "./OdometryPlugin.ts";
 import { PathPlugin } from "./PathPlugin.ts";
@@ -15,6 +16,7 @@ registerPlugins([
   OccupancyGridPlugin,
   OdometryPlugin,
   LaserScanPlugin,
+  MarkerArrayPlugin,
   ImagePlugin,
   TFPlugin,
 ]);
