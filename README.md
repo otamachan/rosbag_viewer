@@ -1,5 +1,7 @@
 # rosbag-viewer
 
+[![CI](https://github.com/otamachan/rosbag_viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/otamachan/rosbag_viewer/actions/workflows/ci.yml)
+
 A web-based ROS1 bag file viewer built with Rust and React. Browse, visualize, and play back `.bag` files entirely in the browser.
 
 <!-- TODO: demo video / screenshot -->
