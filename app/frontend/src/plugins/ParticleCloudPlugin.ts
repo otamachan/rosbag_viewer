@@ -10,10 +10,7 @@ export const ParticleCloudPlugin: DisplayPlugin = {
     d.setLineWidth((settings.size as number) ?? 0.3);
     return {
       object: d.object,
-      update: (msg) => {
-        console.log("[ParticleCloud] update", msg);
-        d.updateParticleCloud(msg);
-      },
+      update: (msg) => d.updateParticleCloud(msg),
       applySettings: (s) => {
         if (s.color != null) d.setColor(parseInt(String(s.color).replace("#", ""), 16));
         if (s.size != null) d.setLineWidth(s.size as number);
