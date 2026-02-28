@@ -6,6 +6,10 @@ export function registerPlugins(list: DisplayPlugin[]): void {
   plugins.push(...list);
 }
 
+export function prependPlugins(list: DisplayPlugin[]): void {
+  plugins.unshift(...list);
+}
+
 export function getPlugins(): DisplayPlugin[] {
   return plugins;
 }

@@ -359,7 +359,7 @@ export function ThreeViewerPanel(props: MultiTopicPanelProps) {
       if (!entry) continue;
 
       // Extract frame_id from message header
-      const frameId = extractFrameId(topic.message);
+      const frameId = entry.display.frameId ?? extractFrameId(topic.message);
       if (frameId) entry.frameId = frameId;
 
       entry.display.update(topic.message);
