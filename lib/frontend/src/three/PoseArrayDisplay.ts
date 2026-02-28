@@ -26,6 +26,9 @@ export class PoseArrayDisplay {
   /** Current allocated capacity of the InstancedMesh. */
   private capacity = 0;
 
+  /** Per-instance arrow scale (applied in instance matrix, not on group). */
+  private arrowScale = 1;
+
   // Reusable temporaries to avoid per-frame allocations
   private readonly _dummy = new THREE.Object3D();
   private readonly _quat = new THREE.Quaternion();
@@ -57,9 +60,8 @@ export class PoseArrayDisplay {
   }
 
   setLineWidth(width: number): void {
-    // PoseArray uses meshes, so scale arrows proportionally
-    const s = width / 2; // default linewidth=2 → scale=1
-    this.object.scale.setScalar(s);
+    // Scale arrows per-instance (not on group, which would also scale positions)
+    this.arrowScale = width / 2; // default linewidth=2 → scale=1
   }
 
   setResolution(_width: number, _height: number): void {
@@ -112,6 +114,7 @@ export class PoseArrayDisplay {
       const z = (pos?.z as number) ?? 0;
 
       dummy.position.set(x, y, z);
+      dummy.scale.setScalar(this.arrowScale);
 
       if (ori) {
         quat.set((ori.x as number) ?? 0, (ori.y as number) ?? 0, (ori.z as number) ?? 0, (ori.w as number) ?? 1);
