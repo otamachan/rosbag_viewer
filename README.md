@@ -8,7 +8,7 @@
 
 Yet another standalone ROS1 bag file viewer built with Rust and React. Just run the binary — it launches a local server and opens the viewer in your browser. Works on Linux, macOS, and Windows.
 
-<!-- TODO: demo video / screenshot -->
+[Screencast from 2026-02-28 15-56-03.webm](https://github.com/user-attachments/assets/5c761fe1-4054-4c2e-b547-e7dae57bea6e)
 
 ## Features
 
