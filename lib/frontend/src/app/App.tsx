@@ -1,42 +1,30 @@
-import type { FileEntry, TopicTimeline as TopicTimelineData } from "@rosbag-viewer/api/client.ts";
-import {
-  getBagInfo,
-  getBagMessages,
-  getBagTimeline,
-  getCwd,
-  getFiles,
-  uploadBagFiles,
-} from "@rosbag-viewer/api/client.ts";
-import { parseFrames } from "@rosbag-viewer/decoder/FrameParser.ts";
-import type {
-  SettingsProfile,
-  TimedMessage,
-  TopicData,
-  TopicDisplaySettings,
-} from "@rosbag-viewer/panels/PanelProps.ts";
-import { MessageBuffer } from "@rosbag-viewer/playback/MessageBuffer.ts";
-import { CollapsibleSection } from "@rosbag-viewer/ui/CollapsibleSection.tsx";
-import { DropOverlay } from "@rosbag-viewer/ui/DropOverlay.tsx";
-import { Sidebar } from "@rosbag-viewer/ui/Sidebar.tsx";
-import type { TimelineTopic } from "@rosbag-viewer/ui/TopicTimeline.tsx";
-import { TopicTimeline } from "@rosbag-viewer/ui/TopicTimeline.tsx";
-import { parseFramesAsync } from "@rosbag-viewer/worker/decodeClient.ts";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { FileEntry, TopicTimeline as TopicTimelineData } from "../api/client.ts";
+import { getBagInfo, getBagMessages, getBagTimeline, getCwd, getFiles, uploadBagFiles } from "../api/client.ts";
+import { parseFrames } from "../decoder/FrameParser.ts";
+import type { SettingsProfile, TimedMessage, TopicData, TopicDisplaySettings } from "../panels/PanelProps.ts";
+import { MessageBuffer } from "../playback/MessageBuffer.ts";
+import { CollapsibleSection } from "../ui/CollapsibleSection.tsx";
+import { DropOverlay } from "../ui/DropOverlay.tsx";
+import { Sidebar } from "../ui/Sidebar.tsx";
+import type { TimelineTopic } from "../ui/TopicTimeline.tsx";
+import { TopicTimeline } from "../ui/TopicTimeline.tsx";
+import { parseFramesAsync } from "../worker/decodeClient.ts";
 
 const ThreeViewerPanel = lazy(() =>
-  import("@rosbag-viewer/panels/builtin/ThreeViewerPanel.tsx").then((m) => ({ default: m.ThreeViewerPanel })),
+  import("../panels/builtin/ThreeViewerPanel.tsx").then((m) => ({ default: m.ThreeViewerPanel })),
 );
 
-import { canHandle3D, findPlugin } from "@rosbag-viewer/plugins/PluginRegistry.ts";
-import type { LoadedBag, MergedTopic } from "@rosbag-viewer/state/MultiBagState.ts";
+import { canHandle3D, findPlugin } from "../plugins/PluginRegistry.ts";
+import type { LoadedBag, MergedTopic } from "../state/MultiBagState.ts";
 import {
   buildMergedTypeMap,
   compositeKey,
   computeTimeRange,
   createLoadedBag,
   mergeTopics,
-} from "@rosbag-viewer/state/MultiBagState.ts";
-import { ProfileSelector } from "@rosbag-viewer/ui/ProfileSelector.tsx";
+} from "../state/MultiBagState.ts";
+import { ProfileSelector } from "../ui/ProfileSelector.tsx";
 import styles from "./App.module.css";
 
 const TF_TYPES = new Set(["tf2_msgs/TFMessage", "tf/tfMessage"]);

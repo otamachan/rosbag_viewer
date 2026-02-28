@@ -9,13 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 rosbag-viewer = { path = "../../lib/server" }
-axum = "0.8"
-tokio = { version = "1", features = ["full"] }
 rust-embed = "8"
-mime_guess = "2"
-env_logger = "0.11"
-open = "5.3"
-log = "0.4"
 
 [lints]
 workspace = true

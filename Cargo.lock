@@ -794,9 +794,13 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "chrono",
+ "env_logger",
  "log",
  "lru",
+ "mime_guess",
+ "open",
  "rosbag",
+ "rust-embed",
  "serde",
  "serde_json",
  "tokio",
@@ -807,14 +811,8 @@ dependencies = [
 name = "rosbag-viewer-app"
 version = "0.1.0"
 dependencies = [
- "axum",
- "env_logger",
- "log",
- "mime_guess",
- "open",
  "rosbag-viewer",
  "rust-embed",
- "tokio",
 ]
 
 [[package]]
