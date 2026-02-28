@@ -21,6 +21,19 @@ Yet another standalone ROS1 bag file viewer built with Rust and React. Just run 
 - **Display Profiles** -- Save and switch between sets of topic visibility / display settings
 - **Plugin System** -- Register custom visualization plugins for application-specific message types
 
+## Download
+
+Pre-built binaries are available on the [Releases](https://github.com/otamachan/rosbag_viewer/releases/latest) page:
+
+| Platform | Download |
+|----------|----------|
+| Linux x86_64 | [rosbag-viewer-app-v0.1.0-linux-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-linux-x86_64.tar.gz) |
+| macOS x86_64 | [rosbag-viewer-app-v0.1.0-macos-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-macos-x86_64.tar.gz) |
+| macOS Apple Silicon | [rosbag-viewer-app-v0.1.0-macos-aarch64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-macos-aarch64.tar.gz) |
+| Windows x86_64 | [rosbag-viewer-app-v0.1.0-windows-x86_64.zip](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-windows-x86_64.zip) |
+
+A [sample bag file](https://github.com/otamachan/rosbag_viewer/releases/download/sample-data/nav2_sim_sample.bag) is also available for testing.
+
 ## Architecture
 
 ```
