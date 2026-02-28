@@ -153,6 +153,26 @@
   margin: 0;
 }
 
+.nsRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px 1px 20px;
+  font-size: 10px;
+}
+
+.nsCheckbox {
+  margin: 0;
+  cursor: pointer;
+}
+
+.nsLabel {
+  color: #555555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .topicType {
   padding: 3px 8px;
   font-size: 10px;

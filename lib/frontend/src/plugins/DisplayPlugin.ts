@@ -45,4 +45,7 @@ export interface DisplayPlugin {
 
   /** Property definitions for settings UI */
   properties?: PropertyDef[];
+
+  /** Extract group names from a message for per-group visibility toggles */
+  extractGroups?: (msg: Record<string, unknown>) => string[];
 }

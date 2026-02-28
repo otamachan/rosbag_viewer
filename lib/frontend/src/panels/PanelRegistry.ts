@@ -19,6 +19,7 @@ const SPATIAL_TYPES = new Set([
   "nav_msgs/OccupancyGrid",
   "nav_msgs/Odometry",
   "sensor_msgs/LaserScan",
+  "visualization_msgs/MarkerArray",
   "tf2_msgs/TFMessage",
   "tf/tfMessage",
 ]);

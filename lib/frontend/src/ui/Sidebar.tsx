@@ -257,6 +257,36 @@ export function Sidebar({
                               )}
                             </div>
                           ))}
+                      {/* Namespace visibility checkboxes */}
+                      {isVisible &&
+                        displayPlugin.extractGroups &&
+                        selectedMessage &&
+                        (() => {
+                          const msgNs = displayPlugin.extractGroups?.(selectedMessage) ?? [];
+                          const settingsNs = Object.keys(settings)
+                            .filter((k) => k.startsWith("ns:"))
+                            .map((k) => k.slice(3));
+                          const allNs = Array.from(new Set([...msgNs, ...settingsNs])).sort();
+                          if (allNs.length === 0) return null;
+                          return allNs.map((ns) => (
+                            <div key={`ns:${ns}`} className={styles.nsRow}>
+                              <input
+                                type="checkbox"
+                                className={styles.nsCheckbox}
+                                checked={settings[`ns:${ns}`] !== false}
+                                onChange={(e) => {
+                                  onDisplaySettingsChange(topic.topicName, {
+                                    ...settings,
+                                    [`ns:${ns}`]: e.target.checked,
+                                  });
+                                }}
+                              />
+                              <span className={styles.nsLabel} title={ns || "(default)"}>
+                                {ns || "(default)"}
+                              </span>
+                            </div>
+                          ));
+                        })()}
                     </div>
                   );
                 })}

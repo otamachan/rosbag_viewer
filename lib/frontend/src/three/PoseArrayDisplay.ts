@@ -144,14 +144,17 @@ function mergeGeometries(geoms: THREE.BufferGeometry[]): THREE.BufferGeometry {
   const normals: number[] = [];
 
   for (const g of geoms) {
-    const pos = g.getAttribute("position");
-    const norm = g.getAttribute("normal");
+    // Expand indexed geometry so vertex order matches triangle faces
+    const expanded = g.index ? g.toNonIndexed() : g;
+    const pos = expanded.getAttribute("position");
+    const norm = expanded.getAttribute("normal");
     for (let i = 0; i < pos.count; i++) {
       positions.push(pos.getX(i), pos.getY(i), pos.getZ(i));
       if (norm) {
         normals.push(norm.getX(i), norm.getY(i), norm.getZ(i));
       }
     }
+    if (expanded !== g) expanded.dispose();
   }
 
   const merged = new THREE.BufferGeometry();
