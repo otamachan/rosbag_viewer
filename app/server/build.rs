@@ -1,6 +1,15 @@
 use std::path::Path;
 use std::process::Command;
 
+fn npm() -> Command {
+    // Windows requires "npm.cmd" instead of "npm"
+    if cfg!(windows) {
+        Command::new("npm.cmd")
+    } else {
+        Command::new("npm")
+    }
+}
+
 fn main() {
     let frontend_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../frontend");
     let dist_dir = frontend_dir.join("dist");
@@ -14,7 +23,7 @@ fn main() {
     let lib_frontend_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../lib/frontend");
 
     // npm ci for lib/frontend
-    let status = Command::new("npm")
+    let status = npm()
         .args(["ci", "--ignore-scripts"])
         .current_dir(&lib_frontend_dir)
         .status()
@@ -22,7 +31,7 @@ fn main() {
     assert!(status.success(), "npm ci failed in lib/frontend");
 
     // npm ci for app/frontend
-    let status = Command::new("npm")
+    let status = npm()
         .args(["ci", "--ignore-scripts"])
         .current_dir(&frontend_dir)
         .status()
@@ -30,7 +39,7 @@ fn main() {
     assert!(status.success(), "npm ci failed in app/frontend");
 
     // npm run build
-    let status = Command::new("npm")
+    let status = npm()
         .args(["run", "build"])
         .current_dir(&frontend_dir)
         .status()
