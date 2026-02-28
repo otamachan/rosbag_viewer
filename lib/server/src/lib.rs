@@ -1,4 +1,5 @@
 pub mod api;
+pub mod app;
 pub mod bag_service;
 pub mod frame;
 pub mod msg_parser;

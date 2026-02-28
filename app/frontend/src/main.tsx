@@ -5,7 +5,7 @@ import { ParticleCloudPlugin } from "./plugins/ParticleCloudPlugin.ts";
 
 registerPlugins([ParticleCloudPlugin]);
 
-import { App } from "./App.tsx";
+import { App } from "@rosbag-viewer/app/App.tsx";
 
 // biome-ignore lint/style/noNonNullAssertion: root element guaranteed by index.html
 createRoot(document.getElementById("root")!).render(<App />);
