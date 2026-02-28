@@ -47,7 +47,11 @@ jobs:
       - name: Package
         shell: bash
         run: |
-          tag="${GITHUB_REF#refs/tags/}"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            tag="${GITHUB_REF#refs/tags/}"
+          else
+            tag="dev-$(echo "$GITHUB_SHA" | head -c 8)"
+          fi
           dir="rosbag-viewer-app-${tag}-${{ matrix.name }}"
           mkdir "$dir"
           cp "target/${{ matrix.target }}/release/${{ matrix.artifact }}" "$dir/"
