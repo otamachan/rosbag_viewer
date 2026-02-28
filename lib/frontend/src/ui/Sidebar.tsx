@@ -309,7 +309,12 @@ export function Sidebar({
               defaultOpen={true}
               headerProps={dragHandleProps}
             >
-              <SidebarComp message={selectedMessage} topicType={selectedTopicType} topicName={selectedTopicName} />
+              <SidebarComp
+                message={selectedMessage}
+                topicType={selectedTopicType}
+                topicName={selectedTopicName}
+                settings={topicDisplaySettings.get(selectedTopicName) ?? {}}
+              />
             </CollapsibleSection>
           </div>
         );

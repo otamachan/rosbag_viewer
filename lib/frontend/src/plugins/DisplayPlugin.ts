@@ -19,6 +19,7 @@ export interface SidebarPluginProps {
   message: Record<string, unknown>;
   topicType: string;
   topicName: string;
+  settings?: Record<string, unknown>;
 }
 
 /** Property definition for auto-generated settings UI */

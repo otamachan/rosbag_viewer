@@ -3,10 +3,58 @@ import type { PanelProps } from "../PanelProps.ts";
 import styles from "./ImagePanel.module.css";
 
 /**
+ * Render a sensor_msgs/CompressedImage onto a canvas element.
+ * The `data` field contains JPEG/PNG bytes which the browser can decode natively.
+ */
+export function renderCompressedImageToCanvas(canvas: HTMLCanvasElement, msg: Record<string, unknown>): void {
+  const data = msg.data;
+  if (!data) return;
+
+  let bytes: Uint8Array;
+  if (data instanceof Uint8Array) {
+    bytes = data;
+  } else if (ArrayBuffer.isView(data)) {
+    bytes = new Uint8Array(
+      (data as ArrayBufferView).buffer,
+      (data as ArrayBufferView).byteOffset,
+      (data as ArrayBufferView).byteLength,
+    );
+  } else {
+    return;
+  }
+
+  // Detect MIME type from format string or raw bytes
+  const format = ((msg.format as string) ?? "").toLowerCase();
+  let mime = "image/jpeg";
+  if (format.includes("png")) {
+    mime = "image/png";
+  }
+
+  const blob = new Blob([new Uint8Array(bytes)], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => URL.revokeObjectURL(url);
+  img.src = url;
+}
+
+/**
  * Render a sensor_msgs/Image message onto a canvas element.
  * Returns true on success, false if required data is missing.
  */
 export function renderImageToCanvas(canvas: HTMLCanvasElement, msg: Record<string, unknown>): boolean {
+  // CompressedImage: has `format` field instead of `encoding`
+  if (msg.format != null && msg.encoding == null) {
+    renderCompressedImageToCanvas(canvas, msg);
+    return true;
+  }
+
   const width = (msg.width as number) ?? 0;
   const height = (msg.height as number) ?? 0;
   const encoding = (msg.encoding as string) ?? "";
@@ -136,9 +184,12 @@ export function renderImageToCanvas(canvas: HTMLCanvasElement, msg: Record<strin
 export function ImagePanel({ message }: PanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const isCompressed = message?.format != null && message?.encoding == null;
   const width = (message?.width as number) ?? 0;
   const height = (message?.height as number) ?? 0;
-  const encoding = (message?.encoding as string) ?? "";
+  const label = isCompressed
+    ? ((message?.format as string) ?? "")
+    : `${width}x${height} ${(message?.encoding as string) ?? ""}`;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -146,7 +197,7 @@ export function ImagePanel({ message }: PanelProps) {
     renderImageToCanvas(canvas, message);
   }, [message]);
 
-  if (!message || !width || !height) {
+  if (!message || (!isCompressed && (!width || !height))) {
     return (
       <div className={styles.root}>
         <span className={styles.empty}>No image at current time</span>
@@ -158,9 +209,7 @@ export function ImagePanel({ message }: PanelProps) {
     <div className={styles.root}>
       <div className={styles.wrapper}>
         <canvas ref={canvasRef} className={styles.canvas} />
-        <div className={styles.info}>
-          {width}x{height} {encoding}
-        </div>
+        <div className={styles.info}>{label}</div>
       </div>
     </div>
   );
