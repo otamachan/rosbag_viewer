@@ -8,6 +8,8 @@ interface CollapsibleSectionProps {
   count?: number;
   /** When true, body gets flex:1 to fill remaining space (for sidebar). */
   fillSpace?: boolean;
+  /** Extra props spread onto the header div (e.g. draggable handle). */
+  headerProps?: React.HTMLAttributes<HTMLDivElement>;
   children: ReactNode;
 }
 
@@ -16,13 +18,14 @@ export function CollapsibleSection({
   defaultOpen = true,
   count,
   fillSpace = false,
+  headerProps,
   children,
 }: CollapsibleSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
     <>
-      <div className={styles.header} onClick={() => setOpen((v) => !v)}>
+      <div className={styles.header} onClick={() => setOpen((v) => !v)} {...headerProps}>
         <span className={styles.arrow}>{open ? "\u25BC" : "\u25B6"}</span>
         <span>{title}</span>
         {count !== undefined && <span className={styles.count}>({count})</span>}

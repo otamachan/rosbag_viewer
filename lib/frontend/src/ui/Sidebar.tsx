@@ -98,12 +98,14 @@ export function Sidebar({
   const renderSection = (id: SectionId) => {
     const isDragOver = dragOverId === id;
     const wrapProps = {
-      draggable: true,
-      onDragStart: () => handleDragStart(id),
       onDragOver: (e: React.DragEvent) => handleDragOver(e, id),
       onDragLeave: handleDragLeave,
       onDrop: (e: React.DragEvent) => handleDrop(e, id),
       onDragEnd: handleDragEnd,
+    };
+    const dragHandleProps = {
+      draggable: true,
+      onDragStart: () => handleDragStart(id),
     };
 
     switch (id) {
@@ -112,7 +114,12 @@ export function Sidebar({
         return (
           <div key={id} {...wrapProps}>
             {isDragOver && <div className={styles.dropIndicator} />}
-            <CollapsibleSection title="Loaded Bags" defaultOpen={true} count={loadedBags.length}>
+            <CollapsibleSection
+              title="Loaded Bags"
+              defaultOpen={true}
+              count={loadedBags.length}
+              headerProps={dragHandleProps}
+            >
               <div className={styles.bagList}>
                 {loadedBags.map((bag) => (
                   <div key={bag.path} className={styles.bagItem}>
@@ -138,6 +145,7 @@ export function Sidebar({
               title="Bag Files"
               defaultOpen={loadedBags.length === 0}
               count={entries.filter((e) => e.kind === "file").length}
+              headerProps={dragHandleProps}
             >
               <FolderBrowser
                 currentDir={currentDir}
@@ -158,7 +166,7 @@ export function Sidebar({
         return (
           <div key={id} {...wrapProps}>
             {isDragOver && <div className={styles.dropIndicator} />}
-            <CollapsibleSection title="Display" defaultOpen={true}>
+            <CollapsibleSection title="Display" defaultOpen={true} headerProps={dragHandleProps}>
               <div className={styles.displayList}>
                 {[{ topicName: selectedTopicName, topicType: selectedTopicType }].map((topic) => {
                   const settings = topicDisplaySettings.get(topic.topicName) ?? {};
@@ -269,6 +277,7 @@ export function Sidebar({
             <CollapsibleSection
               title={selectedPlugin.id.charAt(0).toUpperCase() + selectedPlugin.id.slice(1)}
               defaultOpen={true}
+              headerProps={dragHandleProps}
             >
               <SidebarComp message={selectedMessage} topicType={selectedTopicType} topicName={selectedTopicName} />
             </CollapsibleSection>
@@ -281,7 +290,7 @@ export function Sidebar({
         return (
           <div key={id} {...wrapProps}>
             {isDragOver && <div className={styles.dropIndicator} />}
-            <CollapsibleSection title="Data" defaultOpen={true} fillSpace>
+            <CollapsibleSection title="Data" defaultOpen={true} fillSpace headerProps={dragHandleProps}>
               {selectedTopicType && <div className={styles.topicType}>{selectedTopicType}</div>}
               {selectedMessage ? (
                 <div className={styles.jsonArea}>
