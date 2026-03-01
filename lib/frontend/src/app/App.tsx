@@ -567,16 +567,17 @@ export function App() {
   const handleDownloadSettings = useCallback(() => {
     const data: Record<string, Record<string, unknown>> = {};
     for (const [k, v] of topicDisplaySettings) {
+      if (k === selectedTopicName) continue;
       data[k] = { ...v, hidden: hiddenTopics.has(k) };
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "display-settings.json";
+    a.download = `${activeProfileName}-settings.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [topicDisplaySettings, hiddenTopics]);
+  }, [topicDisplaySettings, hiddenTopics, selectedTopicName, activeProfileName]);
 
   // Upload settings from JSON
   const handleUploadSettings = useCallback(
