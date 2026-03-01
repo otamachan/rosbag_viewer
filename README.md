@@ -14,7 +14,7 @@ Yet another standalone ROS1 bag file viewer built with Rust and React. Just run 
 
 - **File Browser** -- Navigate and select `.bag` files on the server, or drag & drop to upload
 - **Timeline** -- Per-topic message density bars with playback controls, drag-to-select loop range, and zoom/pan
-- **3D Viewer** -- Visualize Pose, PoseArray, Path, Odometry, PointCloud2, LaserScan, OccupancyGrid, and TF transforms in a Three.js scene
+- **3D Viewer** -- Visualize Pose, PoseArray, Path, Odometry, PointCloud2, LaserScan, OccupancyGrid, MarkerArray, PolygonStamped, and TF transforms in a Three.js scene
 - **Image Panel** -- Display `sensor_msgs/Image` and `sensor_msgs/CompressedImage` topics
 - **Data Inspector** -- JSON tree view for raw message inspection
 - **Multi-bag Support** -- Load multiple bag files simultaneously with merged timelines
@@ -27,10 +27,10 @@ Pre-built binaries are available on the [Releases](https://github.com/otamachan/
 
 | Platform | Download |
 |----------|----------|
-| Linux x86_64 | [rosbag-viewer-app-v0.1.0-linux-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-linux-x86_64.tar.gz) |
-| macOS x86_64 | [rosbag-viewer-app-v0.1.0-macos-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-macos-x86_64.tar.gz) |
-| macOS Apple Silicon | [rosbag-viewer-app-v0.1.0-macos-aarch64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-macos-aarch64.tar.gz) |
-| Windows x86_64 | [rosbag-viewer-app-v0.1.0-windows-x86_64.zip](https://github.com/otamachan/rosbag_viewer/releases/download/v0.1.0/rosbag-viewer-app-v0.1.0-windows-x86_64.zip) |
+| Linux x86_64 | [rosbag-viewer-app-v0.2.0-linux-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.2.0/rosbag-viewer-app-v0.2.0-linux-x86_64.tar.gz) |
+| macOS x86_64 | [rosbag-viewer-app-v0.2.0-macos-x86_64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.2.0/rosbag-viewer-app-v0.2.0-macos-x86_64.tar.gz) |
+| macOS Apple Silicon | [rosbag-viewer-app-v0.2.0-macos-aarch64.tar.gz](https://github.com/otamachan/rosbag_viewer/releases/download/v0.2.0/rosbag-viewer-app-v0.2.0-macos-aarch64.tar.gz) |
+| Windows x86_64 | [rosbag-viewer-app-v0.2.0-windows-x86_64.zip](https://github.com/otamachan/rosbag_viewer/releases/download/v0.2.0/rosbag-viewer-app-v0.2.0-windows-x86_64.zip) |
 
 A [sample bag file](https://github.com/otamachan/rosbag_viewer/releases/download/sample-data/nav2_sim_sample.bag) is also available for testing.
 
