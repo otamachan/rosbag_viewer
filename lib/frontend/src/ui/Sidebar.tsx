@@ -211,10 +211,28 @@ export function Sidebar({
                           {isVisible ? "\u25CF" : "\u25CB"}
                         </span>
                       </div>
-                      {/* Auto-generated property UI from plugin properties (excluding color, handled above) */}
+                      {/* Boolean properties — always visible regardless of eye toggle */}
+                      {properties
+                        .filter((p) => p.type === "boolean")
+                        .map((prop) => (
+                          <div key={prop.key} className={styles.propRow}>
+                            <span className={styles.propLabel}>{prop.label}</span>
+                            <input
+                              type="checkbox"
+                              checked={(settings[prop.key] as boolean | undefined) ?? (prop.defaultValue as boolean)}
+                              onChange={(e) => {
+                                onDisplaySettingsChange(topic.topicName, {
+                                  ...settings,
+                                  [prop.key]: e.target.checked,
+                                });
+                              }}
+                            />
+                          </div>
+                        ))}
+                      {/* Auto-generated property UI from plugin properties (excluding color and boolean) */}
                       {isVisible &&
                         properties
-                          .filter((p) => p.type !== "color")
+                          .filter((p) => p.type !== "color" && p.type !== "boolean")
                           .map((prop) => (
                             <div key={prop.key} className={styles.propRow}>
                               <span className={styles.propLabel}>{prop.label}</span>

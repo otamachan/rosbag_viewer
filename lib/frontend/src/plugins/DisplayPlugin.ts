@@ -26,7 +26,7 @@ export interface SidebarPluginProps {
 export interface PropertyDef {
   key: string;
   label: string;
-  type: "number" | "select" | "color";
+  type: "number" | "select" | "color" | "boolean";
   min?: number;
   max?: number;
   step?: number;
