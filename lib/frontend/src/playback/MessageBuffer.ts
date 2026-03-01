@@ -182,6 +182,16 @@ export class MessageBuffer {
     }
   }
 
+  /** Shift all buffered offsets by `delta` seconds (used when globalStartTime changes). */
+  shiftAll(delta: number): void {
+    if (delta === 0) return;
+    for (const arr of this.byTopic.values()) {
+      for (const msg of arr) {
+        msg.offsetSec += delta;
+      }
+    }
+  }
+
   clear(): void {
     this.byTopic.clear();
     this.bagKeys.clear();
