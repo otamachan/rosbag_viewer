@@ -22,6 +22,7 @@ export interface SettingsProfile {
   name: string;
   topicDisplaySettings: Record<string, Record<string, unknown>>;
   hiddenTopics: string[];
+  fixedFrame?: string;
 }
 
 /** Common props passed to every panel component. */

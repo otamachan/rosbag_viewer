@@ -113,27 +113,47 @@ export function App() {
 
   // Topic & playback state
   const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
-  const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(() => {
-    try {
-      const saved = localStorage.getItem("rosbag-viewer:hiddenTopics");
-      if (saved) return new Set(JSON.parse(saved) as string[]);
-    } catch {
-      /* ignore */
-    }
-    return new Set();
-  });
   // Profile state
   const [profiles, setProfiles] = useState<SettingsProfile[]>(() => {
+    let parsed: SettingsProfile[] | null = null;
     try {
       const saved = localStorage.getItem("rosbag-viewer:profiles");
       if (saved) {
-        const parsed = JSON.parse(saved) as SettingsProfile[];
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        const arr = JSON.parse(saved) as SettingsProfile[];
+        if (Array.isArray(arr) && arr.length > 0) parsed = arr;
       }
     } catch {
       /* ignore */
     }
-    return [{ name: "default", topicDisplaySettings: {}, hiddenTopics: [] }];
+    if (!parsed) parsed = [{ name: "default", topicDisplaySettings: {}, hiddenTopics: [] }];
+
+    // Migrate legacy per-key localStorage into default profile
+    const legacyDS = localStorage.getItem("rosbag-viewer:displaySettings");
+    const legacyHT = localStorage.getItem("rosbag-viewer:hiddenTopics");
+    const legacyFF = localStorage.getItem("rosbag-viewer:fixedFrame");
+    if (legacyDS || legacyHT || legacyFF) {
+      const def = parsed.find((p) => p.name === "default") ?? parsed[0];
+      if (legacyDS) {
+        try {
+          def.topicDisplaySettings = JSON.parse(legacyDS) as Record<string, Record<string, unknown>>;
+        } catch {
+          /* ignore */
+        }
+      }
+      if (legacyHT) {
+        try {
+          def.hiddenTopics = JSON.parse(legacyHT) as string[];
+        } catch {
+          /* ignore */
+        }
+      }
+      if (legacyFF) def.fixedFrame = legacyFF;
+      localStorage.removeItem("rosbag-viewer:displaySettings");
+      localStorage.removeItem("rosbag-viewer:hiddenTopics");
+      localStorage.removeItem("rosbag-viewer:fixedFrame");
+    }
+
+    return parsed;
   });
   const [activeProfileName, setActiveProfileName] = useState<string>(() => {
     try {
@@ -143,33 +163,22 @@ export function App() {
     }
   });
 
+  // Restore state from active profile
+  const activeProfileInit = profiles.find((p) => p.name === activeProfileName) ?? profiles[0];
+
+  const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(() => new Set(activeProfileInit.hiddenTopics));
+
   const [loadingKeys, setLoadingKeys] = useState<Set<number>>(new Set());
   const bufferRef = useRef(new MessageBuffer());
   const [_bufferVersion, setBufferVersion] = useState(0);
 
-  // Decoded message for sidebar Data panel (computed inline, no extra render)
-  // Multi-topic 3D viewer state
-  const [topicDisplaySettings, setTopicDisplaySettings] = useState<Map<string, TopicDisplaySettings>>(() => {
-    try {
-      const saved = localStorage.getItem("rosbag-viewer:displaySettings");
-      if (saved) {
-        const obj = JSON.parse(saved) as Record<string, Record<string, unknown>>;
-        return new Map(Object.entries(obj));
-      }
-    } catch {
-      /* ignore */
-    }
-    return new Map();
-  });
+  // Multi-topic 3D viewer state (restored from active profile)
+  const [topicDisplaySettings, setTopicDisplaySettings] = useState<Map<string, TopicDisplaySettings>>(
+    () => new Map(Object.entries(activeProfileInit.topicDisplaySettings)),
+  );
 
-  // TF fixed frame state (persisted to localStorage, default to "map")
-  const [fixedFrame, setFixedFrame] = useState(() => {
-    try {
-      return localStorage.getItem("rosbag-viewer:fixedFrame") ?? "map";
-    } catch {
-      return "map";
-    }
-  });
+  // TF fixed frame state (restored from active profile, default to "map")
+  const [fixedFrame, setFixedFrame] = useState(() => activeProfileInit.fixedFrame ?? "map");
   const [availableFrames, setAvailableFrames] = useState<string[]>([]);
   const prevAvailableFramesRef = useRef<string[]>([]);
   const handleAvailableFramesChange = useCallback((frames: string[]) => {
@@ -527,21 +536,6 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible3DTopics, playback.currentTime, visibleTopicHistories]);
 
-  // Persist display settings to localStorage
-  useEffect(() => {
-    const obj: Record<string, Record<string, unknown>> = {};
-    for (const [k, v] of topicDisplaySettings) obj[k] = v;
-    localStorage.setItem("rosbag-viewer:displaySettings", JSON.stringify(obj));
-  }, [topicDisplaySettings]);
-
-  useEffect(() => {
-    localStorage.setItem("rosbag-viewer:hiddenTopics", JSON.stringify([...hiddenTopics]));
-  }, [hiddenTopics]);
-
-  useEffect(() => {
-    localStorage.setItem("rosbag-viewer:fixedFrame", fixedFrame);
-  }, [fixedFrame]);
-
   // Auto-sync: keep active profile in sync with live settings
   useEffect(() => {
     setProfiles((prev) =>
@@ -549,10 +543,10 @@ export function App() {
         if (p.name !== activeProfileName) return p;
         const obj: Record<string, Record<string, unknown>> = {};
         for (const [k, v] of topicDisplaySettings) obj[k] = v;
-        return { ...p, topicDisplaySettings: obj, hiddenTopics: [...hiddenTopics] };
+        return { ...p, topicDisplaySettings: obj, hiddenTopics: [...hiddenTopics], fixedFrame };
       }),
     );
-  }, [topicDisplaySettings, hiddenTopics, activeProfileName]);
+  }, [topicDisplaySettings, hiddenTopics, fixedFrame, activeProfileName]);
 
   // Persist profiles to localStorage
   useEffect(() => {
@@ -565,11 +559,18 @@ export function App() {
 
   // Download settings as JSON
   const handleDownloadSettings = useCallback(() => {
-    const data: Record<string, Record<string, unknown>> = {};
+    const topics: Record<string, Record<string, unknown>> = {};
     for (const [k, v] of topicDisplaySettings) {
       if (k === selectedTopicName) continue;
-      data[k] = { ...v, hidden: hiddenTopics.has(k) };
+      topics[k] = { ...v, hidden: hiddenTopics.has(k) };
     }
+    // Include hidden topics that have no display settings
+    for (const t of hiddenTopics) {
+      if (t !== selectedTopicName && !topics[t]) {
+        topics[t] = { hidden: true };
+      }
+    }
+    const data = { fixedFrame, hiddenTopics: [...hiddenTopics], topics };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -577,16 +578,19 @@ export function App() {
     a.download = `${activeProfileName}-settings.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [topicDisplaySettings, hiddenTopics, selectedTopicName, activeProfileName]);
+  }, [topicDisplaySettings, hiddenTopics, selectedTopicName, activeProfileName, fixedFrame]);
 
   // Upload settings from JSON
   const handleUploadSettings = useCallback(
     (json: string) => {
       try {
-        const data = JSON.parse(json) as Record<string, Record<string, unknown>>;
+        const raw = JSON.parse(json) as Record<string, unknown>;
+        // Support new format (with topics/fixedFrame) and legacy flat format
+        const topicEntries = (raw.topics ?? raw) as Record<string, Record<string, unknown>>;
         const next = new Map(topicDisplaySettings);
         const nextHidden = new Set(hiddenTopics);
-        for (const [name, s] of Object.entries(data)) {
+        for (const [name, s] of Object.entries(topicEntries)) {
+          if (name === "fixedFrame" || name === "hiddenTopics") continue;
           const { hidden, ...settings } = s;
           next.set(name, { visible: true, ...settings });
           if (hidden) nextHidden.add(name);
@@ -594,6 +598,9 @@ export function App() {
         }
         setTopicDisplaySettings(next);
         setHiddenTopics(nextHidden);
+        if (typeof raw.fixedFrame === "string") {
+          setFixedFrame(raw.fixedFrame);
+        }
       } catch {
         // ignore invalid JSON
       }
@@ -614,7 +621,7 @@ export function App() {
       setProfiles((prev) =>
         prev.map((p) =>
           p.name === activeProfileName
-            ? { ...p, topicDisplaySettings: serializeDisplaySettings(), hiddenTopics: [...hiddenTopics] }
+            ? { ...p, topicDisplaySettings: serializeDisplaySettings(), hiddenTopics: [...hiddenTopics], fixedFrame }
             : p,
         ),
       );
@@ -624,12 +631,13 @@ export function App() {
         if (target) {
           setTopicDisplaySettings(new Map(Object.entries(target.topicDisplaySettings)));
           setHiddenTopics(new Set(target.hiddenTopics));
+          setFixedFrame(target.fixedFrame ?? "map");
         }
         return prev;
       });
       setActiveProfileName(name);
     },
-    [activeProfileName, serializeDisplaySettings, hiddenTopics],
+    [activeProfileName, serializeDisplaySettings, hiddenTopics, fixedFrame],
   );
 
   const handleAddProfile = useCallback(
@@ -638,11 +646,12 @@ export function App() {
         name,
         topicDisplaySettings: serializeDisplaySettings(),
         hiddenTopics: [...hiddenTopics],
+        fixedFrame,
       };
       setProfiles((prev) => [...prev, snapshot]);
       setActiveProfileName(name);
     },
-    [serializeDisplaySettings, hiddenTopics],
+    [serializeDisplaySettings, hiddenTopics, fixedFrame],
   );
 
   const handleDeleteProfile = useCallback(
@@ -654,6 +663,7 @@ export function App() {
         if (defaultProfile) {
           setTopicDisplaySettings(new Map(Object.entries(defaultProfile.topicDisplaySettings)));
           setHiddenTopics(new Set(defaultProfile.hiddenTopics));
+          setFixedFrame(defaultProfile.fixedFrame ?? "map");
         }
         setActiveProfileName("default");
       }
@@ -791,6 +801,27 @@ export function App() {
           title="Load display settings from file"
         >
           Load
+        </button>
+        <button
+          type="button"
+          className={styles.headerBtn}
+          onClick={() => {
+            if (!confirm("Clear all display settings and profiles?")) return;
+            const keys: string[] = [];
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              if (k?.startsWith("rosbag-viewer:")) keys.push(k);
+            }
+            for (const k of keys) localStorage.removeItem(k);
+            setTopicDisplaySettings(new Map());
+            setHiddenTopics(new Set());
+            setFixedFrame("map");
+            setProfiles([{ name: "default", topicDisplaySettings: {}, hiddenTopics: [] }]);
+            setActiveProfileName("default");
+          }}
+          title="Clear all display settings"
+        >
+          Clear
         </button>
       </div>
 
