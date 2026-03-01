@@ -95,8 +95,11 @@ function usePlayback(duration: number, loopRange: [number, number] | null) {
     setIsPlaying(false);
     setCurrentTime(0);
   }, []);
+  const shift = useCallback((delta: number) => {
+    setCurrentTime((prev) => Math.max(0, prev + delta));
+  }, []);
 
-  return { isPlaying, currentTime, speed, setSpeed, play, pause, seek, reset, seekVersion };
+  return { isPlaying, currentTime, speed, setSpeed, play, pause, seek, reset, shift, seekVersion };
 }
 
 export function App() {
@@ -171,6 +174,7 @@ export function App() {
   const [loadingKeys, setLoadingKeys] = useState<Set<number>>(new Set());
   const bufferRef = useRef(new MessageBuffer());
   const [_bufferVersion, setBufferVersion] = useState(0);
+  const prevGlobalStartRef = useRef<number | null>(null);
 
   // Multi-topic 3D viewer state (restored from active profile)
   const [topicDisplaySettings, setTopicDisplaySettings] = useState<Map<string, TopicDisplaySettings>>(
@@ -250,6 +254,19 @@ export function App() {
 
   const [loopRange, setLoopRange] = useState<[number, number] | null>(null);
   const playback = usePlayback(timeRange.duration, loopRange);
+
+  // When globalStartTime changes (e.g. a bag with earlier start_time is loaded),
+  // shift all existing buffer offsets and playback position so they stay consistent.
+  useEffect(() => {
+    const prev = prevGlobalStartRef.current;
+    if (prev !== null && prev !== timeRange.startTime) {
+      const delta = prev - timeRange.startTime;
+      bufferRef.current.shiftAll(delta);
+      playback.shift(delta);
+      setBufferVersion((v) => v + 1);
+    }
+    prevGlobalStartRef.current = timeRange.startTime;
+  }, [timeRange.startTime, playback.shift]);
 
   const selectedMergedTopic = mergedTopics.find((t) => t.name === selectedTopicName) ?? null;
   // Fetch server CWD on startup
